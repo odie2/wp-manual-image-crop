@@ -221,20 +221,13 @@ class ManualImageCrop {
 
 		$size = wp_get_image_editor( $src_file )->get_size();
 
-		$is_higher = ( $dst_h > $size["height"] );
-		$is_wider = ( $dst_w > $size["width"] );
+		if ( $dst_w > $size["width"] || $dst_h > $size["height"] ) {
+			$size_ratio = max($dst_w / $size["width"], $dst_h / $size["height"]);
 
-		if ( $is_higher || $is_wider ) {
-			if ( $is_higher ) {
-				$scale = $src_h / $size["height"];
-			} else {
-				$scale = $src_w / $size["width"];
-			}
-
-			$src_w = $src_w / $scale;
-			$src_h = $src_h / $scale;
-			$src_x = $src_x / $scale;
-			$src_y = $src_y / $scale;
+			$src_w = round($dst_w / $size_ratio);
+			$src_h = round($dst_h / $size_ratio);
+			$src_x = round($src_x / $size_ratio);
+			$src_y = round($src_y / $size_ratio);
 		}
 
 		//saves the selected area
